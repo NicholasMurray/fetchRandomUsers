@@ -2,24 +2,31 @@ import React, { useState, useEffect } from "react";
 import "./style.css";
 
 export default function App() {
+
   const [randomUsers, setRandomUsers] = useState([]);
 
+  async function fetchRandomUserJSON() {
+    const response = await fetch("https://randomuser.me/api/");
+    const randomUser = await response.json();
+    return randomUser.results[0];
+  }
+
   const fetchRandomUser = () => {
-    fetch("https://randomuser.me/api/")
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        const user = data.results[0];
+    //debugger;
+    fetchRandomUserJSON().then(randomUser => {
+        console.log(randomUser);
+        const {id, name, picture} = randomUser;
         setRandomUsers([
           ...randomUsers,
           {
-            firstname: user.name.first,
-            lastname: user.name.last,
-            image: user.picture.thumbnail
+            id: id.value,
+            firstname: name.first,
+            lastname: name.last,
+            image: picture.thumbnail
           }
         ]);
-      });
-  };
+    });
+  }
 
   return (
     <div>
@@ -27,7 +34,10 @@ export default function App() {
       <button onClick={fetchRandomUser}>Fetch Random User</button>
       <ul>
         {randomUsers.map(user => (
-          <li>User: {user.firstname} {user.lastname} <img src={user.image} /></li>
+          <li key={user.id}>
+            User: {user.firstname} {user.lastname} 
+            <img src={user.image} />
+            </li>
         ))}
       </ul>
     </div>

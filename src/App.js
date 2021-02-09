@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./style.css";
+
+async function fetchRandomUserJSON() {
+  const response = await fetch("https://randomuser.me/api/");
+  const randomUser = await response.json();
+  return randomUser.results[0];
+}
 
 export default function App() {
 
   const [randomUsers, setRandomUsers] = useState([]);
 
-  async function fetchRandomUserJSON() {
-    const response = await fetch("https://randomuser.me/api/");
-    const randomUser = await response.json();
-    return randomUser.results[0];
-  }
-
   const fetchRandomUser = () => {
-    //debugger;
     fetchRandomUserJSON().then(randomUser => {
-        console.log(randomUser);
         const {id, name, picture} = randomUser;
         setRandomUsers([
           ...randomUsers,
@@ -35,9 +33,8 @@ export default function App() {
       <ul>
         {randomUsers.map(user => (
           <li key={user.id}>
-            User: {user.firstname} {user.lastname} 
-            <img src={user.image} />
-            </li>
+            User: {user.firstname} {user.lastname} <img src={user.image} />
+          </li>
         ))}
       </ul>
     </div>
